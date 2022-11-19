@@ -110,6 +110,12 @@ public class GameScreen implements Screen {
         game.batch.draw(tank2Image, tank2.x, tank2.y, tank2.width, tank2.height);
         game.batch.end();
 
+        if (Gdx.input.isTouched()) {
+            Vector3 touchPos = new Vector3();
+            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+            tank1.x = touchPos.x - 64 / 2;
+        }
         // process user input
 //        if (Gdx.input.isTouched()) {
 //            Vector3 touchPos = new Vector3();

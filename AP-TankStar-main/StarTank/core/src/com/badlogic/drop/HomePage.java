@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 public class HomePage implements Screen {
 
@@ -26,6 +28,7 @@ public class HomePage implements Screen {
     private Texture backgroundImage;
     private TextureRegion backgroundTexture;
     OrthographicCamera camera;
+    private Stage stage;
 
     public HomePage(final Drop game) {
         this.game = game;
@@ -77,6 +80,9 @@ public class HomePage implements Screen {
     @Override
     public void show() {
         EnvironmentWar.play();
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+//        atlas = new TextureAtlas()
     }
 
     @Override
@@ -95,14 +101,21 @@ public class HomePage implements Screen {
         game.batch.draw(TankStarImage, TankStar.x, TankStar.y, TankStar.width, TankStar.height);
         game.batch.end();
 
+//        if (Gdx.input.isTouched()) {
+//            Vector3 touchPos = new Vector3();
+//            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+//            camera.unproject(touchPos);
+//            NewGame.x = touchPos.x - 64 / 2;
+//        }
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
-            game.setScreen(new GameScreen(game));
+            game.setScreen(new TankChooseScreen(game));
             dispose();
         }
 //        if (Gdx.input.isTouched()) {
 //            game.setScreen(new TankChooseScreen(game));
 //            dispose();
 //        }
+
     }
 
     @Override

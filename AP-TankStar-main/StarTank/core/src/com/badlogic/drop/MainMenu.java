@@ -44,6 +44,10 @@ public class MainMenu implements Screen {
             game.setScreen(new HomePage(game));
             dispose();
         }
+//        if (Gdx.input.isTouched()) {
+//            game.setScreen(new TankChooseScreen(game));
+//            dispose();
+//        }
     }
 
     @Override

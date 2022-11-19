@@ -16,8 +16,10 @@ public class TankChooseScreen implements Screen {
     Texture AbramsTankImage;
     Texture TigerTankImage;
     Texture AtomicTankImage;
+    Texture ChooseTankTxt;
     Music EnvironmentWar;
     Rectangle AbramsTank;
+    Rectangle ChooseTank;
     Rectangle TigerTank;
     Rectangle AtomicTank;
 
@@ -27,10 +29,11 @@ public class TankChooseScreen implements Screen {
 
     public TankChooseScreen(final Drop game) {
         this.game = game;
-        AbramsTankImage = new Texture(Gdx.files.internal("AbramsTankImage.jpg"));
-        TigerTankImage = new Texture(Gdx.files.internal("TigerTankImage.jpg"));
-        AtomicTankImage = new Texture(Gdx.files.internal("AtomicTankImage.jpg"));
+        AbramsTankImage = new Texture(Gdx.files.internal("AbramsTankImage.png"));
+        TigerTankImage = new Texture(Gdx.files.internal("TigerTankImage.png"));
+        AtomicTankImage = new Texture(Gdx.files.internal("AtomicTankImage.png"));
         backgroundImage = new Texture(Gdx.files.internal("ChooseTankBackground.jpg"));
+        ChooseTankTxt=new Texture(Gdx.files.internal("ChooseTankTxt.png"));
         backgroundTexture = new TextureRegion(backgroundImage, 0, 0, 555, 260);
 
         EnvironmentWar = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
@@ -62,6 +65,13 @@ public class TankChooseScreen implements Screen {
         TigerTank.width = 200;
         TigerTank.height = 200;
 
+        ChooseTank=new Rectangle();
+        ChooseTank.x= 3* 800 / 3 - 790;
+        ChooseTank.y = 328; // bottom left corner of the bucket is 20 pixels above
+        // the bottom screen edge
+        ChooseTank.width = 200;
+        ChooseTank.height = 200;
+
     }
 
     @Override
@@ -78,16 +88,18 @@ public class TankChooseScreen implements Screen {
 
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0,0, 800, 480);
-        game.font.draw(game.batch, "Choose your Tank!", 300, 400);
+        game.font.draw(game.batch, "Player 1", 80, 400);
         game.batch.draw(AbramsTankImage, AbramsTank.x, AbramsTank.y, AbramsTank.width, AbramsTank.height);
         game.batch.draw(AtomicTankImage, AtomicTank.x, AtomicTank.y, AtomicTank.width, AtomicTank.height);
         game.batch.draw(TigerTankImage, TigerTank.x, TigerTank.y, TigerTank.width, TigerTank.height);
+        game.batch.draw(ChooseTankTxt, ChooseTank.x, ChooseTank.y, ChooseTank.width, ChooseTank.height);
         game.batch.end();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
-            game.setScreen(new GameScreen(game));
-            dispose();
-        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+//            game.setScreen(new GameScreen(game));
+//            dispose();
+//        }
+
 //        if (Gdx.input.isTouched()) {
 //            game.setScreen(new HomePage(game));
 //            dispose();
@@ -120,6 +132,7 @@ public class TankChooseScreen implements Screen {
         AtomicTankImage.dispose();
         TigerTankImage.dispose();
         EnvironmentWar.dispose();
+        ChooseTankTxt.dispose();
     }
 
 }
