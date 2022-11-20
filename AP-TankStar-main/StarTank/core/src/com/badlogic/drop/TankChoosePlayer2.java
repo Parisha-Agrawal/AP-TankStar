@@ -9,30 +9,30 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
-public class TankChooseScreen implements Screen {
+public class TankChoosePlayer2 implements Screen {
 
 
     final Drop game;
-    Texture AbramsTankImage;
-    Texture TigerTankImage;
-    Texture AtomicTankImage;
+    Texture AbramsFlipTankImage;
+    Texture Tiger_HDFlipImage;
+    Texture AtomicFlipImage;
     Texture ChooseTankTxt;
     Music EnvironmentWar;
-    Rectangle AbramsTank;
+    Rectangle AbramsFlipTank;
     Rectangle ChooseTank;
-    Rectangle TigerTank;
-    Rectangle AtomicTank;
+    Rectangle Tiger_HDFlip;
+    Rectangle AtomicFlipTank;
 
     private Texture backgroundImage;
     private TextureRegion backgroundTexture;
     OrthographicCamera camera;
 
-    public TankChooseScreen(final Drop game) {
+    public TankChoosePlayer2(final Drop game) {
         this.game = game;
-        AbramsTankImage = new Texture(Gdx.files.internal("AbramsTankImage.png"));
-        TigerTankImage = new Texture(Gdx.files.internal("TigerTankImage.png"));
-        AtomicTankImage = new Texture(Gdx.files.internal("AtomicTankImage.png"));
-        backgroundImage = new Texture(Gdx.files.internal("Background.png"));
+        AbramsFlipTankImage = new Texture(Gdx.files.internal("AbramsFlipImage.png"));
+        Tiger_HDFlipImage = new Texture(Gdx.files.internal("Tiger_HDFlipImage.png"));
+        AtomicFlipImage = new Texture(Gdx.files.internal("AtomicFlipTankImage.png"));
+        backgroundImage = new Texture(Gdx.files.internal("Background3.png"));
         ChooseTankTxt=new Texture(Gdx.files.internal("ChooseTankTxt.png"));
         backgroundTexture = new TextureRegion(backgroundImage, 0, 0, 555, 260);
 
@@ -44,40 +44,41 @@ public class TankChooseScreen implements Screen {
 
 
         // create a Rectangle to logically represent the tanks
-        AbramsTank = new Rectangle();
-        AbramsTank.x = 800 / 3 - 240; // center the bucket horizontally
-        AbramsTank.y = 128; // bottom left corner of the bucket is 20 pixels above
+        AbramsFlipTank = new Rectangle();
+        AbramsFlipTank.x = 800 / 3 - 240; // center the bucket horizontally
+        AbramsFlipTank.y = 128; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
-        AbramsTank.width = 200;
-        AbramsTank.height = 150;
+        AbramsFlipTank.width = 200;
+        AbramsFlipTank.height = 150;
 
-        AtomicTank = new Rectangle();
-        AtomicTank.x = 2* 800 / 3 - 240; // center the bucket horizontally
-        AtomicTank.y = 128; // bottom left corner of the bucket is 20 pixels above
+        AtomicFlipTank = new Rectangle();
+        AtomicFlipTank.x = 2* 800 / 3 - 240; // center the bucket horizontally
+        AtomicFlipTank.y = 128; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
-        AtomicTank.width = 200;
-        AtomicTank.height = 150;
+        AtomicFlipTank.width = 200;
+        AtomicFlipTank.height = 150;
 
-        TigerTank = new Rectangle();
-        TigerTank.x = 3* 800 / 3 - 240; // center the bucket horizontally
-        TigerTank.y = 128; // bottom left corner of the bucket is 20 pixels above
+        Tiger_HDFlip = new Rectangle();
+        Tiger_HDFlip.x = 3* 800 / 3 - 240; // center the bucket horizontally
+        Tiger_HDFlip.y = 128; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
-        TigerTank.width = 200;
-        TigerTank.height = 130;
+        Tiger_HDFlip.width = 200;
+        Tiger_HDFlip.height = 130;
 
         ChooseTank=new Rectangle();
         ChooseTank.x= 3* 800 / 3 - 790;
         ChooseTank.y = 328; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
-        ChooseTank.width = 210;
-        ChooseTank.height = 210;
+        ChooseTank.width = 200;
+        ChooseTank.height = 200;
 
     }
+
+
+
 
     @Override
-    public void show() {
-        EnvironmentWar.play();
-    }
+    public void show() { EnvironmentWar.play(); }
 
     @Override
     public void render(float delta) {
@@ -88,15 +89,15 @@ public class TankChooseScreen implements Screen {
 
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0,0, 800, 480);
-        game.font.draw(game.batch, "Player 1", 80, 400);
-        game.batch.draw(AbramsTankImage, AbramsTank.x, AbramsTank.y, AbramsTank.width, AbramsTank.height);
-        game.batch.draw(AtomicTankImage, AtomicTank.x, AtomicTank.y, AtomicTank.width, AtomicTank.height);
-        game.batch.draw(TigerTankImage, TigerTank.x, TigerTank.y, TigerTank.width, TigerTank.height);
+        game.font.draw(game.batch, "Player 2", 80, 400);
+        game.batch.draw(AbramsFlipTankImage, AbramsFlipTank.x, AbramsFlipTank.y, AbramsFlipTank.width, AbramsFlipTank.height);
+        game.batch.draw(AtomicFlipImage, AtomicFlipTank.x, AtomicFlipTank.y, AtomicFlipTank.width, AtomicFlipTank.height);
+        game.batch.draw(Tiger_HDFlipImage, Tiger_HDFlip.x, Tiger_HDFlip.y, Tiger_HDFlip.width, Tiger_HDFlip.height);
         game.batch.draw(ChooseTankTxt, ChooseTank.x, ChooseTank.y, ChooseTank.width, ChooseTank.height);
         game.batch.end();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)){
-            game.setScreen(new TankChoosePlayer2(game));
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+            game.setScreen(new GameScreen(game));
             dispose();
         }
 
@@ -128,11 +129,12 @@ public class TankChooseScreen implements Screen {
 
     @Override
     public void dispose() {
-        AbramsTankImage.dispose();
-        AtomicTankImage.dispose();
-        TigerTankImage.dispose();
+        AbramsFlipTankImage.dispose();
+        AtomicFlipImage.dispose();
+        Tiger_HDFlipImage.dispose();
         EnvironmentWar.dispose();
         ChooseTankTxt.dispose();
     }
 
 }
+

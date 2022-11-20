@@ -3,6 +3,7 @@ package com.badlogic.drop;
 import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -38,8 +39,8 @@ public class GameScreen implements Screen {
         this.game = game;
 
         // load the images for the droplet and the bucket, 64x64 pixels each
-        tank1Image = new Texture(Gdx.files.internal("AbramsTankNB.png"));
-        tank2Image = new Texture(Gdx.files.internal("TigerTankNB.png"));
+        tank1Image = new Texture(Gdx.files.internal("AbramsTank.png"));
+        tank2Image = new Texture(Gdx.files.internal("TigerBowUpFlipGameImage.png"));
         backgroundImage = new Texture(Gdx.files.internal("background.jpg"));
         backgroundTexture = new TextureRegion(backgroundImage, 0, 0, 1376, 771);
 
@@ -55,17 +56,17 @@ public class GameScreen implements Screen {
         // create a Rectangle to logically represent the bucket
         tank1 = new Rectangle();
         tank1.x = 800 / 4 - 70; // center the bucket horizontally
-        tank1.y = 235; // bottom left corner of the bucket is 20 pixels above
+        tank1.y = 222; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
-        tank1.width = 64;
+        tank1.width = 74;
         tank1.height = 64;
 
         tank2 = new Rectangle();
-        tank2.x = 2* 800 / 3 -100; // center the bucket horizontally
+        tank2.x = 2* 800 / 3 +120; // center the bucket horizontally
         tank2.y = 240; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
         tank2.width = 64;
-        tank2.height = 64;
+        tank2.height = 34;
 
         // create the raindrops array and spawn the first raindrop
 //        raindrops = new Array<Rectangle>();
@@ -115,6 +116,10 @@ public class GameScreen implements Screen {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
             tank1.x = touchPos.x - 64 / 2;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
+            game.setScreen(new Pause(game));
+            dispose();
         }
         // process user input
 //        if (Gdx.input.isTouched()) {
