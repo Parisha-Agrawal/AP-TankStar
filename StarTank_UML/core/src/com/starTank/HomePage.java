@@ -66,11 +66,11 @@ public class HomePage implements Screen {
         Resume.height = 300;
 
         TankStar = new Rectangle();
-        TankStar.x = 3* 800f / 3 - 620; // center the bucket horizontally
-        TankStar.y = 220; // bottom left corner of the bucket is 20 pixels above
+        TankStar.x = 3* 800f / 3 - 690; // center the bucket horizontally
+        TankStar.y = 180; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
-        TankStar.width = 400;
-        TankStar.height = 300;
+        TankStar.width = 520;
+        TankStar.height = 420;
 
     }
 

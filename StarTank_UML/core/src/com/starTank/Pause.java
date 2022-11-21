@@ -1,6 +1,7 @@
 package com.starTank;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -97,6 +98,10 @@ public class Pause implements Screen {
         game.batch.draw(PauseTxt, Pause.x, Pause.y, Pause.width, Pause.height);
         game.batch.end();
 
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+            game.setScreen(new SavedGames(game));
+            dispose();
+        }
     }
 
     @Override

@@ -48,35 +48,33 @@ public class TankChoose implements Screen {
         // create a Rectangle to logically represent the tanks
         AbramsFlipTank = new Rectangle();
         AbramsFlipTank.x = 800f / 3 - 240; // center the bucket horizontally
-        AbramsFlipTank.y = 128; // bottom left corner of the bucket is 20 pixels above
+        AbramsFlipTank.y = 98; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
-        AbramsFlipTank.width = 200;
-        AbramsFlipTank.height = 150;
+        AbramsFlipTank.width = 240;
+        AbramsFlipTank.height = 240;
 
         AtomicFlipTank = new Rectangle();
         AtomicFlipTank.x = 2* 800f / 3 - 240; // center the bucket horizontally
-        AtomicFlipTank.y = 128; // bottom left corner of the bucket is 20 pixels above
+        AtomicFlipTank.y = 168; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
         AtomicFlipTank.width = 200;
-        AtomicFlipTank.height = 150;
+        AtomicFlipTank.height = 100;
 
         Tiger_HDFlip = new Rectangle();
         Tiger_HDFlip.x = 3* 800f / 3 - 240; // center the bucket horizontally
-        Tiger_HDFlip.y = 128; // bottom left corner of the bucket is 20 pixels above
+        Tiger_HDFlip.y = 162; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
         Tiger_HDFlip.width = 200;
-        Tiger_HDFlip.height = 130;
+        Tiger_HDFlip.height = 100;
 
         ChooseTank=new Rectangle();
         ChooseTank.x= 3* 800f / 3 - 790;
-        ChooseTank.y = 328; // bottom left corner of the bucket is 20 pixels above
+        ChooseTank.y = 280; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
-        ChooseTank.width = 200;
-        ChooseTank.height = 200;
+        ChooseTank.width = 320;
+        ChooseTank.height = 260;
 
     }
-
-
 
 
     @Override
