@@ -1,7 +1,7 @@
 # AP-TankStar
 Game developed using libGDX in java
 
-# Members
+$Members
 1) Parisha Agrawal (2021270)
 2) Annu Kumari (2021312)
 
