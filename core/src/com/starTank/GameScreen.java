@@ -39,8 +39,10 @@ public class GameScreen implements Screen {
         }
         tank1Image = new Texture(Gdx.files.internal("AbramsTankImage.png"));
         tank2Image = new Texture(Gdx.files.internal("Tiger_HDFlipImage.png"));
-        Texture backgroundImage = new Texture(Gdx.files.internal("landscapebg.jpg"));
-        backgroundTexture = new TextureRegion(backgroundImage, -5, -5, 356, 271);
+//        Texture backgroundImage = new Texture(Gdx.files.internal("landscapebg.jpg"));
+        Texture backgroundImage = new Texture(Gdx.files.internal("gamescreen2.jpeg"));
+        //backgroundTexture = new TextureRegion(backgroundImage, -5, -5, 356, 271);
+        backgroundTexture = new TextureRegion(backgroundImage, 80, 50, 856, 551);
 
         // load the drop sound effect and the rain background "music"
         shootSound = Gdx.audio.newSound(Gdx.files.internal("tankwar.wav"));
@@ -53,18 +55,18 @@ public class GameScreen implements Screen {
 
         // create a Rectangle to logically represent the bucket
         tank1 = new Rectangle();
-        tank1.x = 800f/4 - 160; // center the bucket horizontally
-        tank1.y = 142; // bottom left corner of the bucket is 20 pixels above
+        tank1.x = 800f/4 - 200; // center the bucket horizontally
+        tank1.y = 82; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
-        tank1.width = 174;
-        tank1.height = 164;
+        tank1.width = 74;
+        tank1.height = 71;
 
         tank2 = new Rectangle();
-        tank2.x = 2* 800f/3 +100; // center the bucket horizontally
-        tank2.y = 180; // bottom left corner of the bucket is 20 pixels above
+        tank2.x = 2* 800f/3 +5000; // center the bucket horizontally
+        tank2.y = 100; // bottom left corner of the bucket is 20 pixels above
         // the bottom screen edge
-        tank2.width = 164;
-        tank2.height = 84;
+        tank2.width = 70;
+        tank2.height = 40;
 
     }
 
@@ -102,12 +104,12 @@ public class GameScreen implements Screen {
         game.batch.draw(tank2Image, tank2.x, tank2.y, tank2.width, tank2.height);
         game.batch.end();
 
-        if (Gdx.input.isTouched()) {
-            Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-            tank1.x = touchPos.x - 32;
-        }
+//        if (Gdx.input.isTouched()) {
+//            Vector3 touchPos = new Vector3();
+//            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+//            camera.unproject(touchPos);
+//            tank1.x = touchPos.x - 32;
+//        }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
             tank1.x -= 200 * Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
@@ -122,16 +124,16 @@ public class GameScreen implements Screen {
             game.setScreen(new Pause(game,this));
             dispose();
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        if (Gdx.input.isKeyPressed(Input.Keys.UP))
             tank2.x -= 200 * Gdx.graphics.getDeltaTime();
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
             tank2.x += 200 * Gdx.graphics.getDeltaTime();
 
         // make sure the bucket stays within the screen bounds
         if (tank2.x < 0)
             tank2.x = 0;
-        if (tank2.x > 800 - 164)
-            tank2.x = 800 - 164;
+        if (tank2.x > 800 - 84)
+            tank2.x = 800 - 84;
 
     }
 
