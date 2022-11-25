@@ -39,7 +39,7 @@ public class HomePage implements Screen {
         Texture backgroundImage = new Texture(Gdx.files.internal("ChooseTankBackground.jpg"));
         backgroundTexture = new TextureRegion(backgroundImage, 0, 0, 555, 260);
 
-        EnvironmentWar = Gdx.audio.newMusic(Gdx.files.internal("EnvironmentWar.wav"));
+        EnvironmentWar = Gdx.audio.newMusic(Gdx.files.internal("tankwar.wav"));
         EnvironmentWar.setLooping(true);
 
         camera = new OrthographicCamera();
@@ -99,6 +99,9 @@ public class HomePage implements Screen {
         game.batch.draw(ExitImage, Exit.x, Exit.y, Exit.width, Exit.height);
         game.batch.draw(ResumeImage, Resume.x, Resume.y, Resume.width, Resume.height);
         game.batch.draw(TankStarImage, TankStar.x, TankStar.y, TankStar.width, TankStar.height);
+        game.font.draw(game.batch, "Press 1: To choose tank for player1", 260, 80);
+        game.font.draw(game.batch, "Press 2: To check Saved Games list", 260, 60);
+        game.font.draw(game.batch, "Press 3: To exit", 260, 40);
         game.batch.end();
 
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){

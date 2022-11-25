@@ -38,7 +38,7 @@ public class Pause implements Screen {
         Texture backgroundImage = new Texture(Gdx.files.internal("Background2.png"));
         backgroundTexture = new TextureRegion(backgroundImage, 0, 0, 555, 260);
 
-        EnvironmentWar = Gdx.audio.newMusic(Gdx.files.internal("EnvironmentWar.wav"));
+        EnvironmentWar = Gdx.audio.newMusic(Gdx.files.internal("tankwar.wav"));
         EnvironmentWar.setLooping(true);
 
         camera = new OrthographicCamera();
