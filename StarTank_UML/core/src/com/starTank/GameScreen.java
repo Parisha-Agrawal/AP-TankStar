@@ -17,28 +17,27 @@ public class GameScreen implements Screen {
     public static final String TITLE="TANK STAR";
     private Texture tank1Image;
     private Texture tank2Image;
-
+    private Texture pauseButtonImage;
     private final TextureRegion backgroundTexture;
     private final Sound shootSound;
     private final Music EnvironmentWar;
     private final OrthographicCamera camera;
     private final Rectangle tank1;
     private final Rectangle tank2;
-    private Tank p1Tank;
-    private Tank p2Tank;
+    private final Rectangle pauseButton;
+    private final Tank p1Tank;
+    private final Tank p2Tank;
 
     public GameScreen(final Shoot game, Tank p1Tank, Tank p2Tank) {
         this.game = game;
+        System.out.println(p1Tank.getName());
+        System.out.println(p2Tank.getName());
 
-        // load the images for the droplet and the bucket, 64x64 pixels each
-        if ((p1Tank!=null) && (p2Tank!=null)) {
-            this.p1Tank = p1Tank;
-            this.p2Tank = p2Tank;
-            tank1Image = new Texture(Gdx.files.internal(p1Tank.getName()));
-            tank2Image = new Texture(Gdx.files.internal(p2Tank.getName()));
-        }
-        tank1Image = new Texture(Gdx.files.internal("AbramsTankImage.png"));
-        tank2Image = new Texture(Gdx.files.internal("Tiger_HDFlipImage.png"));
+        this.p1Tank = p1Tank;
+        this.p2Tank = p2Tank;
+
+        pauseButtonImage = new Texture(Gdx.files.internal("PauseButton.png"));
+
 //        Texture backgroundImage = new Texture(Gdx.files.internal("landscapebg.jpg"));
         Texture backgroundImage = new Texture(Gdx.files.internal("gamescreen2.jpeg"));
         //backgroundTexture = new TextureRegion(backgroundImage, -5, -5, 356, 271);
@@ -53,20 +52,24 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
 
-        // create a Rectangle to logically represent the bucket
+        // create a Rectangle to logically represent the tank
         tank1 = new Rectangle();
-        tank1.x = 800f/4 - 200; // center the bucket horizontally
-        tank1.y = 82; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
-        tank1.width = 74;
-        tank1.height = 71;
+        tank1.x = 800f/4 - 200;
+        tank1.y = 82;
+        tank1.width = 70;
+        tank1.height = 50;
 
         tank2 = new Rectangle();
-        tank2.x = 2* 800f/3 +5000; // center the bucket horizontally
-        tank2.y = 100; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
+        tank2.x = 2* 800f/3 +5000;
+        tank2.y = 100;
         tank2.width = 70;
-        tank2.height = 40;
+        tank2.height = 50;
+
+        pauseButton = new Rectangle();
+        pauseButton.x = 800 - 30;
+        pauseButton.y = 450;
+        pauseButton.width = 20;
+        pauseButton.height = 20;
 
     }
 
@@ -86,22 +89,18 @@ public class GameScreen implements Screen {
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
 
-        if ((p1Tank!=null) && (p2Tank!=null)) {
-            tank1Image = new Texture(Gdx.files.internal(p1Tank.getName()));
-            tank2Image = new Texture(Gdx.files.internal(p2Tank.getName()));
-        }
-        tank1Image = new Texture(Gdx.files.internal("AbramsTankImage.png"));
-        tank2Image = new Texture(Gdx.files.internal("Tiger_HDFlipImage.png"));
+        tank1Image = new Texture(Gdx.files.internal(p1Tank.getName()));
+        tank2Image = new Texture(Gdx.files.internal(p2Tank.getName()));
 
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0,0, 800, 480);
-        game.font.draw(game.batch, "Press pageUp key to pause the game", 250, 50);
         int player1Health = 20;
         game.font.draw(game.batch, "Player1 Health: " + player1Health, 0, 480);
         int player2Health = 20;
         game.font.draw(game.batch, "Player2 Health: " + player2Health, 600, 480);
         game.batch.draw(tank1Image, tank1.x, tank1.y, tank1.width, tank1.height);
         game.batch.draw(tank2Image, tank2.x, tank2.y, tank2.width, tank2.height);
+        game.batch.draw(pauseButtonImage, pauseButton.x, pauseButton.y, pauseButton.width, pauseButton.height);
         game.batch.end();
 
 //        if (Gdx.input.isTouched()) {
@@ -115,26 +114,31 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
             tank1.x += 200 * Gdx.graphics.getDeltaTime();
 
-        // make sure the bucket stays within the screen bounds
         if (tank1.x < 0)
             tank1.x = 0;
         if (tank1.x > 800 - 174)
             tank1.x = 800 - 174;
-        if (Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
-            game.setScreen(new Pause(game,this));
-            dispose();
-        }
+
+
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
             tank2.x -= 200 * Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
             tank2.x += 200 * Gdx.graphics.getDeltaTime();
 
-        // make sure the bucket stays within the screen bounds
         if (tank2.x < 0)
             tank2.x = 0;
         if (tank2.x > 800 - 84)
             tank2.x = 800 - 84;
 
+        if (Gdx.input.isTouched()) {
+            Vector3 touchPos = new Vector3();
+            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+            if (touchPos.x >= 800 - 30 - 5 && touchPos.x <= 800 - 30 + 20 && touchPos.y >= 450 - 5 && touchPos.y <=  450 + 20){
+                game.setScreen(new Pause(game,this));
+                dispose();
+            }
+        }
     }
 
     @Override

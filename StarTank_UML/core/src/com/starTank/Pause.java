@@ -93,22 +93,22 @@ public class Pause implements Screen {
 
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0,0, 800, 480);
-        game.font.draw(game.batch, "Press A, B or C", 330, 350);
+        game.font.draw(game.batch, "Press 1, 2 or 3", 330, 350);
         game.batch.draw(SaveButtonImage, SaveButton.x, SaveButton.y, SaveButton.width, SaveButton.height);
         game.batch.draw(ExitButtonImage, ExitButton.x, ExitButton.y, ExitButton.width, ExitButton.height);
         game.batch.draw(ResumeButtonImage, ResumeButton.x, ResumeButton.y, ResumeButton.width, ResumeButton.height);
         game.batch.draw(PauseTxt, Pause.x, Pause.y, Pause.width, Pause.height);
         game.batch.end();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.A)){
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
             game.setScreen(new SavedGames(game));
             dispose();
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.B)){
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)){
             game.setScreen(this.gameScreen);
             dispose();
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.C)){
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)){
             game.setScreen(new HomePage(game));
             dispose();
         }

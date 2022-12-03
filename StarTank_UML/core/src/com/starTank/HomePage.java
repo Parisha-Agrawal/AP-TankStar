@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -46,32 +47,27 @@ public class HomePage implements Screen {
         camera.setToOrtho(false, 800, 480);
 
 
-        // create a Rectangle to logically represent the tanks
         NewGame = new Rectangle();
-        NewGame.x = 800f / 3 - 40; // center the bucket horizontally
-        NewGame.y = 128; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
+        NewGame.x = 800f / 3 - 40;
+        NewGame.y = 128;
         NewGame.width = 280;
         NewGame.height = 300;
 
-        Exit = new Rectangle();
-        Exit.x = 2* 800f / 3 - 310; // center the bucket horizontally
-        Exit.y = 28; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
-        Exit.width = 310;
-        Exit.height = 300;
-
         Resume = new Rectangle();
-        Resume.x = 3* 800f / 3 - 580; // center the bucket horizontally
-        Resume.y = 80; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
+        Resume.x = 3* 800f / 3 - 580;
+        Resume.y = 80;
         Resume.width = 300;
         Resume.height = 300;
 
+        Exit = new Rectangle();
+        Exit.x = 2* 800f / 3 - 310;
+        Exit.y = 28;
+        Exit.width = 310;
+        Exit.height = 300;
+
         TankStar = new Rectangle();
-        TankStar.x = 3* 800f / 3 - 690; // center the bucket horizontally
-        TankStar.y = 180; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
+        TankStar.x = 3* 800f / 3 - 690;
+        TankStar.y = 180;
         TankStar.width = 520;
         TankStar.height = 420;
 
@@ -96,25 +92,27 @@ public class HomePage implements Screen {
         game.batch.draw(backgroundTexture, 0,0, 800, 480);
 //        game.font.draw(game.batch, "Tank Star", 350, 400);
         game.batch.draw(NewGameImage, NewGame.x, NewGame.y, NewGame.width, NewGame.height);
-        game.batch.draw(ExitImage, Exit.x, Exit.y, Exit.width, Exit.height);
         game.batch.draw(ResumeImage, Resume.x, Resume.y, Resume.width, Resume.height);
+        game.batch.draw(ExitImage, Exit.x, Exit.y, Exit.width, Exit.height);
         game.batch.draw(TankStarImage, TankStar.x, TankStar.y, TankStar.width, TankStar.height);
-        game.font.draw(game.batch, "Press 1: To choose tank for player1", 260, 80);
-        game.font.draw(game.batch, "Press 2: To check Saved Games list", 260, 60);
-        game.font.draw(game.batch, "Press 3: To exit", 260, 40);
         game.batch.end();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
-            game.setScreen(new TankChoose(game,"Player 1","Press keys A, B or C to select the tanks"));
-            dispose();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)){
-            game.setScreen(new SavedGames(game));
-            dispose();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)){
-            exit();
-            dispose();
+        if (Gdx.input.isTouched()) {
+            Vector3 touchPos = new Vector3();
+            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+            if (touchPos.x >= 800f / 3 - 40 && touchPos.x <=  800f / 3 - 40 + 280 && touchPos.y >= 260 && touchPos.y <=  320){
+                game.setScreen(new TankChoose(game,"Player 1","Press keys A, B or C to select the tanks",null));
+                dispose();
+            }
+            else if (touchPos.x >= 3* 800f / 3 - 580 && touchPos.x <=  3* 800f / 3 - 580 + 300 && touchPos.y >= 200 && touchPos.y <=  250){
+                game.setScreen(new SavedGames(game));
+                dispose();
+            }
+            else if (touchPos.x >= 2* 800f / 3 - 310 && touchPos.x <=  2* 800f / 3 - 310 + 310 && touchPos.y >= 150 && touchPos.y <=  195){
+                exit();
+                dispose();
+            }
         }
     }
 

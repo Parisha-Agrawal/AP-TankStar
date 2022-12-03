@@ -32,10 +32,11 @@ public class TankChoose implements Screen {
     private final TextureRegion backgroundTexture;
     private final OrthographicCamera camera;
 
-    public TankChoose(final Shoot game, String player, String chooseType) {
+    public TankChoose(final Shoot game, String player, String chooseType, Tank p1Tank) {
         this.game = game;
         this.player = player;
         this.chooseType = chooseType;
+        this.p1Tank = p1Tank;
         AbramsTankImage = new Texture(Gdx.files.internal("AbramsTankImage.png"));
         TigerTankImage = new Texture(Gdx.files.internal("TigerTankImage.png"));
         AtomicTankImage = new Texture(Gdx.files.internal("AtomicTankImage.png"));
@@ -52,30 +53,26 @@ public class TankChoose implements Screen {
 
         // create a Rectangle to logically represent the tanks
         AbramsTank = new Rectangle();
-        AbramsTank.x = 800f / 3 - 240; // center the bucket horizontally
-        AbramsTank.y = 98; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
+        AbramsTank.x = 800f / 3 - 240;
+        AbramsTank.y = 98;
         AbramsTank.width = 240;
         AbramsTank.height = 240;
 
         AtomicTank = new Rectangle();
-        AtomicTank.x = 2* 800f / 3 - 240; // center the bucket horizontally
-        AtomicTank.y = 168; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
+        AtomicTank.x = 2* 800f / 3 - 240;
+        AtomicTank.y = 168;
         AtomicTank.width = 200;
         AtomicTank.height = 100;
 
         TigerTank = new Rectangle();
-        TigerTank.x = 3* 800f / 3 - 240; // center the bucket horizontally
-        TigerTank.y = 162; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
+        TigerTank.x = 3* 800f / 3 - 240;
+        TigerTank.y = 162;
         TigerTank.width = 200;
         TigerTank.height = 100;
 
         ChooseTank=new Rectangle();
         ChooseTank.x= 3* 800f / 3 - 790;
-        ChooseTank.y = 280; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
+        ChooseTank.y = 280;
         ChooseTank.width = 320;
         ChooseTank.height = 260;
 
@@ -113,19 +110,19 @@ public class TankChoose implements Screen {
         if ((Objects.equals(player, "Player 1")) && (Gdx.input.isKeyPressed(Input.Keys.A))){
             p1Tank = new Tank("AbramsTankImage.png",10,130,222,45,"cannon",1);
             setPlayer1Tank(p1Tank);
-            game.setScreen(new TankChoose(game,"Player 2","Press keys 1, 2 or 3 to select the tanks"));
+            game.setScreen(new TankChoose(game,"Player 2","Press keys 1, 2 or 3 to select the tanks",p1Tank));
             dispose();
         }
         if ((Objects.equals(player, "Player 1")) && (Gdx.input.isKeyPressed(Input.Keys.B))){
             p1Tank = new Tank("AtomicTankImage.png",10,130,222,45,"cannon",1);
             setPlayer1Tank(p1Tank);
-            game.setScreen(new TankChoose(game,"Player 2","Press keys 1, 2 or 3 to select the tanks"));
+            game.setScreen(new TankChoose(game,"Player 2","Press keys 1, 2 or 3 to select the tanks",p1Tank));
             dispose();
         }
         if ((Objects.equals(player, "Player 1")) && (Gdx.input.isKeyPressed(Input.Keys.C))){
             p1Tank = new Tank("TigerTankImage.png",10,130,222,45,"cannon",1);
             setPlayer1Tank(p1Tank);
-            game.setScreen(new TankChoose(game,"Player 2","Press keys 1, 2 or 3 to select the tanks"));
+            game.setScreen(new TankChoose(game,"Player 2","Press keys 1, 2 or 3 to select the tanks",p1Tank));
             dispose();
         }
         if ((Objects.equals(player, "Player 2")) && (Gdx.input.isKeyPressed(Input.Keys.NUM_1))){
@@ -135,7 +132,7 @@ public class TankChoose implements Screen {
             dispose();
         }
         if ((Objects.equals(player, "Player 2")) && (Gdx.input.isKeyPressed(Input.Keys.NUM_2))){
-            p2Tank = new Tank("AtomicTankImage.png",10,653,240,45,"cannon",1);
+            p2Tank = new Tank("AtomicFlipTankImage.png",10,653,240,45,"cannon",1);
             setPlayer2Tank(p2Tank);
             game.setScreen(new GameScreen(game,p1Tank,p2Tank));
             dispose();
