@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+//import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen implements Screen {
@@ -27,19 +28,22 @@ public class GameScreen implements Screen {
     private final Rectangle pauseButton;
     private final Tank p1Tank;
     private final Tank p2Tank;
+    private int backgroundOffset;
 
     public GameScreen(final Shoot game, Tank p1Tank, Tank p2Tank) {
         this.game = game;
         System.out.println(p1Tank.getName());
         System.out.println(p2Tank.getName());
 
+        backgroundOffset = 0;
+
         this.p1Tank = p1Tank;
         this.p2Tank = p2Tank;
-
         pauseButtonImage = new Texture(Gdx.files.internal("PauseButton.png"));
 
-//        Texture backgroundImage = new Texture(Gdx.files.internal("landscapebg.jpg"));
-        Texture backgroundImage = new Texture(Gdx.files.internal("gamescreen2.jpeg"));
+
+//        Texture backgroundImage = new Texture(Gdx.files.internal("gamescreen2.jpeg"));
+        Texture backgroundImage = new Texture(Gdx.files.internal("gamebackground2.jpg"));
         //backgroundTexture = new TextureRegion(backgroundImage, -5, -5, 356, 271);
         backgroundTexture = new TextureRegion(backgroundImage, 80, 50, 856, 551);
 
@@ -76,12 +80,11 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // clear the screen with a dark blue color. The
-        // arguments to clear are the red, green
-        // blue and alpha component in the range [0,1]
-        // of the color to be used to clear the screen.
         ScreenUtils.clear(0, 0, 0.2f, 1);
-
+        backgroundOffset++;
+        if (backgroundOffset % 800 == 0) {
+            backgroundOffset = 0;
+        }
         // tell the camera to update its matrices.
         camera.update();
 
@@ -93,7 +96,9 @@ public class GameScreen implements Screen {
         tank2Image = new Texture(Gdx.files.internal(p2Tank.getName()));
 
         game.batch.begin();
-        game.batch.draw(backgroundTexture, 0,0, 800, 480);
+//        game.batch.draw(backgroundTexture, 0,0, 800, 480);
+        game.batch.draw(backgroundTexture, -backgroundOffset,0, 800, 480);
+        game.batch.draw(backgroundTexture, -backgroundOffset+800,0, 800, 480);
         int player1Health = 20;
         game.font.draw(game.batch, "Player1 Health: " + player1Health, 0, 480);
         int player2Health = 20;
@@ -109,6 +114,7 @@ public class GameScreen implements Screen {
 //            camera.unproject(touchPos);
 //            tank1.x = touchPos.x - 32;
 //        }
+
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
             tank1.x -= 200 * Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
