@@ -20,6 +20,14 @@ public class Player {
         return name;
     }
 
+    public float getHealth() {
+        return health;
+    }
+
+    public void setHealth(float health) {
+        this.health = health;
+    }
+
     public PlayerGameInfo getInfo() {
         return info;
     }

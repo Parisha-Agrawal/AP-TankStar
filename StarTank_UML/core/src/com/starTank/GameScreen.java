@@ -177,10 +177,10 @@ public class GameScreen implements Screen {
 //        }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
             p1.getInfo().getTank().setPositionX((int) (p1.getInfo().getTank().getPositionX() - (200 * Gdx.graphics.getDeltaTime())));
-            tank1.x = p1.getInfo().getTank().getPositionX();
+        tank1.x = p1.getInfo().getTank().getPositionX();
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
             p1.getInfo().getTank().setPositionX((int) (p1.getInfo().getTank().getPositionX() + (200 * Gdx.graphics.getDeltaTime())));
-            tank1.x = p1.getInfo().getTank().getPositionX();
+        tank1.x = p1.getInfo().getTank().getPositionX();
 
         if (tank1.x < 0) {
             p1.getInfo().getTank().setPositionX(0);
@@ -220,10 +220,10 @@ public class GameScreen implements Screen {
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
             p2.getInfo().getTank().setPositionX((int) (p2.getInfo().getTank().getPositionX() - (200 * Gdx.graphics.getDeltaTime())));
-            tank2.x = p2.getInfo().getTank().getPositionX();
+        tank2.x = p2.getInfo().getTank().getPositionX();
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
             p2.getInfo().getTank().setPositionX((int) (p2.getInfo().getTank().getPositionX() + (200 * Gdx.graphics.getDeltaTime())));
-            tank2.x = p2.getInfo().getTank().getPositionX();
+        tank2.x = p2.getInfo().getTank().getPositionX();
 
         if (tank2.x < 0){
             p2.getInfo().getTank().setPositionX(0);
@@ -273,6 +273,24 @@ public class GameScreen implements Screen {
                 }
             }}
 
+        if(Gdx.input.isKeyPressed(Input.Keys.G)){
+//            p1.setHealth(p1.getHealth()-2);
+//            p1.getInfo().setHealth(p1.getInfo().getHealth()-2);
+            p1.setHealth(8);
+            p1.getInfo().setHealth(8);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.H)){
+//            p2.setHealth(p2.getHealth()-2);
+//            p2.getInfo().setHealth(p2.getInfo().getHealth()-2);
+            p2.setHealth(8);
+            p2.getInfo().setHealth(8);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.W)){
+//            p1.setHealth(p1.getHealth()-2);
+//            p1.getInfo().setHealth(p1.getInfo().getHealth()-2);
+            p1.setHealth(0);
+            p1.getInfo().setHealth(0);
+        }
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -281,6 +299,12 @@ public class GameScreen implements Screen {
                 game.setScreen(new Pause(game,p1.getInfo(),p2.getInfo()));
                 dispose();
             }
+        }
+        if (p1.getHealth() <= 0){
+            game.setScreen(new WinScreen(game,"Player 1"));
+        }
+        else if (p2.getHealth() <= 0){
+            game.setScreen(new WinScreen(game,"Player 2"));
         }
     }
 
