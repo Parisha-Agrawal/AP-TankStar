@@ -10,11 +10,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import java.io.IOException;
+
 public class Pause implements Screen {
-
-
-    private final Shoot game;
-    private GameScreen gameScreen;
+    private static Shoot game;
+    private PlayerGameInfo p1Info;
+    private PlayerGameInfo p2Info;
     private final Texture SaveButtonImage;
     private final Texture ResumeButtonImage;
     private final Texture ExitButtonImage;
@@ -24,13 +26,14 @@ public class Pause implements Screen {
     private final Rectangle ResumeButton;
     private final Rectangle ExitButton;
     private final Rectangle Pause;
-
+    private static int maxLimSaveFlag = 0;
     private final TextureRegion backgroundTexture;
     OrthographicCamera camera;
 
-    public Pause(final Shoot game, GameScreen gameScreen) {
+    public Pause(final Shoot game, PlayerGameInfo p1Info, PlayerGameInfo p2Info) {
         this.game = game;
-        this.gameScreen = gameScreen;
+        this.p1Info = p1Info;
+        this.p2Info = p2Info;
         SaveButtonImage = new Texture(Gdx.files.internal("startButton.png"));
         ResumeButtonImage = new Texture(Gdx.files.internal("ResumeButton.png"));
         ExitButtonImage = new Texture(Gdx.files.internal("ExitButton.png"));
@@ -43,7 +46,6 @@ public class Pause implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
-
 
         // create a Rectangle to logically represent the tanks
         SaveButton = new Rectangle();
@@ -84,6 +86,16 @@ public class Pause implements Screen {
 //        atlas = new TextureAtlas()
     }
 
+
+    public static void clickOnSave(GameInfo gInfo) throws IOException {
+        if (SavedGames.GamesTillNow < SavedGames.TotalGames) {
+            game.setScreen(new SavedGames(game,gInfo));
+        }
+        else{
+            maxLimSaveFlag = 1;
+        }
+    }
+
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 0);
@@ -98,14 +110,24 @@ public class Pause implements Screen {
         game.batch.draw(ExitButtonImage, ExitButton.x, ExitButton.y, ExitButton.width, ExitButton.height);
         game.batch.draw(ResumeButtonImage, ResumeButton.x, ResumeButton.y, ResumeButton.width, ResumeButton.height);
         game.batch.draw(PauseTxt, Pause.x, Pause.y, Pause.width, Pause.height);
+
+        if(maxLimSaveFlag == 1){
+            game.font.draw(game.batch, "Saved Games already have 5 games!!", 250, 200);
+        }
         game.batch.end();
 
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
-            game.setScreen(new SavedGames(game));
+            try {
+                clickOnSave(new GameInfo(p1Info,p2Info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             dispose();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)){
-            game.setScreen(this.gameScreen);
+            Player p1 = new Player("Player 1",p1Info);
+            Player p2 = new Player("Player 2",p2Info);
+            game.setScreen(new GameScreen(game,p1,p2));
             dispose();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)){

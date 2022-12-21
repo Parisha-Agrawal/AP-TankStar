@@ -3,7 +3,22 @@ package com.starTank;
 public class Player {
     private String name;
     private float health;
-    private PlayerGameInfo info = new PlayerGameInfo();
+    private PlayerGameInfo info;
+
+    public Player(String name, float health, Tank pTank) {
+        this.name = name;
+        this.health = health;
+        this.info = new PlayerGameInfo(health,pTank);
+    }
+
+    public Player(String name, PlayerGameInfo info) {
+        this.name = name;
+        this.info = info;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public PlayerGameInfo getInfo() {
         return info;

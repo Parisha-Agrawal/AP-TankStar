@@ -11,26 +11,31 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import java.util.Objects;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SavedGames implements Screen {
 
     private final Shoot game;
-//    private final Texture time1Image;
-//    private final Texture time2Image;
+    public static int TotalGames = 5;
+    public static int GamesTillNow = 0;
     private final Texture SavedGamesTxt;
     private final Music EnvironmentWar;
-//    private final Rectangle time1;
-//    private final Rectangle time2;
     private final Rectangle SavedGames;
 
     private final TextureRegion backgroundTexture;
     private final OrthographicCamera camera;
+    private static int cannotLoadFlag = 0;
+//    private HashMap<String,String> fNameTime; // for savedFileName and time
 
-    public SavedGames(final Shoot game) {
+    public SavedGames(final Shoot game, GameInfo gameInfo) throws IOException {
         this.game = game;
-//        time1Image = new Texture(Gdx.files.internal("4_00.png"));
-//        time2Image = new Texture(Gdx.files.internal("4_20.png"));
         SavedGamesTxt = new Texture(Gdx.files.internal("SavedGamesTxt.png"));
         Texture backgroundImage = new Texture(Gdx.files.internal("bgSavedGames.png"));
         backgroundTexture = new TextureRegion(backgroundImage, 0, 0, 555, 260);
@@ -40,22 +45,7 @@ public class SavedGames implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
-
-
-        // create a Rectangle to logically represent the tanks
-//        time1 = new Rectangle();
-//        time1.x = 800f / 3 - 40; // center the bucket horizontally
-//        time1.y = 128; // bottom left corner of the bucket is 20 pixels above
-//        // the bottom screen edge
-//        time1.width = 300;
-//        time1.height = 300;
-//
-//        time2 = new Rectangle();
-//        time2.x = 3* 800f / 3 - 580; // center the bucket horizontally
-//        time2.y = 80; // bottom left corner of the bucket is 20 pixels above
-//        // the bottom screen edge
-//        time2.width = 300;
-//        time2.height = 300;
+//        this.fNameTime = game.getfNameTime();
 
         SavedGames = new Rectangle();
         SavedGames.x = 3* 800f / 3 - 690; // center the bucket horizontally
@@ -64,10 +54,50 @@ public class SavedGames implements Screen {
         SavedGames.width = 520;
         SavedGames.height = 420;
 
+        if (game.getfNameTime().size() == 0){
+            game.addToFNameTime("saveGame1.txt","");
+            game.addToFNameTime("saveGame2.txt","");
+            game.addToFNameTime("saveGame3.txt","");
+            game.addToFNameTime("saveGame4.txt","");
+            game.addToFNameTime("saveGame5.txt","");
+        }
+
+        if (gameInfo!=null){
+            saveGame(gameInfo);
+        }
+
     }
 
-    public void loadGame(String time){
+    public void saveGame(GameInfo gameInfo) throws IOException {
+        ObjectOutputStream out = null;
+        try {
+            out = new ObjectOutputStream(Files.newOutputStream(Paths.get("saveGame"+(GamesTillNow+1)+".txt")));
+            out.writeObject(gameInfo);
+            game.addToFNameTime("saveGame"+(GamesTillNow+1)+".txt",getCurrTime());
+            GamesTillNow++;
+        } finally {
+            assert out != null;
+            out.close();
+        }
+    }
 
+    public void loadGame(int idx) throws IOException, ClassNotFoundException {
+        if (idx<=GamesTillNow){
+            ObjectInputStream in = null;
+            try {
+                in =  new ObjectInputStream (Files.newInputStream(Paths.get("saveGame"+(idx)+".txt")));
+                GameInfo gameInfo = (GameInfo) in.readObject();
+                game.setScreen(new GameScreen(game,gameInfo));
+            } finally {
+                in.close();
+            }
+        }
+    }
+
+    public static String getCurrTime() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        return (formatter.format(date));
     }
 
     @Override
@@ -87,12 +117,17 @@ public class SavedGames implements Screen {
 
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0,0, 800, 480);
-        game.font.draw(game.batch, "1) 2022-11-18 11:36:20", 300, 300);
-        game.font.draw(game.batch, "2) 2022-11-20 20:15:00", 300, 250);
-        game.font.draw(game.batch, "Press esc key to exit to HomePage", 50, 50);
-//        game.batch.draw(time1Image, time1.x, time1.y, time1.width, time1.height);
-//        game.batch.draw(time2Image, time2.x, time2.y, time2.width, time2.height);
         game.batch.draw(SavedGamesTxt, SavedGames.x, SavedGames.y, SavedGames.width, SavedGames.height);
+
+        int i = 0;
+        int y_up = 300;
+        while (i<GamesTillNow){
+            game.font.draw(game.batch, (i+1)+") "+game.getfNameTime().get("saveGame"+(i+1)+".txt"), 300, y_up);
+            i++;
+            y_up -= 40;
+        }
+
+        game.font.draw(game.batch, "Press esc key to exit to HomePage", 50, 50);
         game.batch.end();
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
@@ -100,6 +135,46 @@ public class SavedGames implements Screen {
             dispose();
         }
 
+        if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_1)){
+            try {
+                loadGame(1);
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            dispose();
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2)){
+            try {
+                loadGame(2);
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            dispose();
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_3)){
+            try {
+                loadGame(3);
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            dispose();
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4)){
+            try {
+                loadGame(4);
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            dispose();
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_5)){
+            try {
+                loadGame(5);
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            dispose();
+        }
     }
 
     @Override

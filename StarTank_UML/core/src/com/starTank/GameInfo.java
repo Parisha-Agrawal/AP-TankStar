@@ -1,9 +1,21 @@
 package com.starTank;
 
-public class GameInfo {
-    private final Player player1 = new Player();
-    private final Player player2 = new Player();
-    private final PlayerGameInfo P1GameInfo = player1.getInfo();
-    private final PlayerGameInfo P2GameInfo = player2.getInfo();
+import java.io.Serializable;
 
+public class GameInfo implements Serializable {
+    private final PlayerGameInfo P1GameInfo;
+    private final PlayerGameInfo P2GameInfo;
+
+    public GameInfo(PlayerGameInfo p1GameInfo, PlayerGameInfo p2GameInfo) {
+        P1GameInfo = p1GameInfo;
+        P2GameInfo = p2GameInfo;
+    }
+
+    public PlayerGameInfo getP1GameInfo() {
+        return P1GameInfo;
+    }
+
+    public PlayerGameInfo getP2GameInfo() {
+        return P2GameInfo;
+    }
 }

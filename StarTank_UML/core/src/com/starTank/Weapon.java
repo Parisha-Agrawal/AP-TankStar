@@ -1,6 +1,8 @@
 package com.starTank;
 
-public class Weapon {
+import java.io.Serializable;
+
+public class Weapon implements Serializable {
     private String name;
     private float exactDamage;
 

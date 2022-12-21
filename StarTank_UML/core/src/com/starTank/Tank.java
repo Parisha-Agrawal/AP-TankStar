@@ -1,6 +1,8 @@
 package com.starTank;
 
-public class Tank {
+import java.io.Serializable;
+
+public class Tank implements Serializable {
     private String name;
     private float fuel;
     private int positionX;
@@ -15,6 +17,22 @@ public class Tank {
         this.positionY = positionY;
         this.angle = angle;
         this.weapon = new Weapon(weaponName,weaponDamage);
+    }
+
+    public int getPositionX() {
+        return positionX;
+    }
+
+    public void setPositionX(int positionX) {
+        this.positionX = positionX;
+    }
+
+    public int getPositionY() {
+        return positionY;
+    }
+
+    public void setPositionY(int positionY) {
+        this.positionY = positionY;
     }
 
     public String getName() {

@@ -13,10 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.awt.*;
+import java.io.IOException;
+import java.util.HashMap;
 
 public class HomePage implements Screen {
-
-
     private final Shoot game;
     private final Texture NewGameImage;
     private final Texture ResumeImage;
@@ -45,7 +45,6 @@ public class HomePage implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
-
 
         NewGame = new Rectangle();
         NewGame.x = 800f / 3 - 40;
@@ -106,7 +105,11 @@ public class HomePage implements Screen {
                 dispose();
             }
             else if (touchPos.x >= 3* 800f / 3 - 580 && touchPos.x <=  3* 800f / 3 - 580 + 300 && touchPos.y >= 200 && touchPos.y <=  250){
-                game.setScreen(new SavedGames(game));
+                try {
+                    game.setScreen(new SavedGames(game,null));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 dispose();
             }
             else if (touchPos.x >= 2* 800f / 3 - 310 && touchPos.x <=  2* 800f / 3 - 310 + 310 && touchPos.y >= 150 && touchPos.y <=  195){
@@ -148,6 +151,5 @@ public class HomePage implements Screen {
         EnvironmentWar.dispose();
         TankStarImage.dispose();
     }
-
 }
 

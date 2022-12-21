@@ -1,7 +1,6 @@
 package com.starTank;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -53,11 +52,8 @@ public class MainMenu implements Screen {
                 game.setScreen(new HomePage(game));
                 dispose();
             }
-
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.ENTER))
-            game.setScreen(new HomePage(game));
-        dispose();
+
     }
 
     @Override

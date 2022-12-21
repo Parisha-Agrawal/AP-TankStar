@@ -5,17 +5,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-//import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
+//import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.TimeUtils;
-
-import java.util.Iterator;
 
 public class GameScreen implements Screen {
     private final Shoot game;
@@ -23,40 +21,31 @@ public class GameScreen implements Screen {
     private Texture tank1Image;
     private Texture tank2Image;
     private Texture pauseButtonImage;
-    private Texture arrowImage;
-    private Array<Rectangle> arrowpath;
-    private long lastArrowTime;
-    private int dropsGathered;
     private final TextureRegion backgroundTexture;
     private final Sound shootSound;
     private final Music EnvironmentWar;
-    private final OrthographicCamera camera;
+
+    private OrthographicCamera camera;
     private final Rectangle tank1;
     private final Rectangle tank2;
     private final Rectangle pauseButton;
-    private final Tank p1Tank;
-    private final Tank p2Tank;
-    private int backgroundOffset;
+    private final Player p1;
+    private final Player p2;
 
-
-    public GameScreen(final Shoot game, Tank p1Tank, Tank p2Tank) {
+    public GameScreen(final Shoot game, Player p1, Player p2) {
         this.game = game;
-        System.out.println(p1Tank.getName());
-        System.out.println(p2Tank.getName());
 
-        backgroundOffset = 0;
+        this.p1 = p1;
+        this.p2 = p2;
 
-        this.p1Tank = p1Tank;
-        this.p2Tank = p2Tank;
         pauseButtonImage = new Texture(Gdx.files.internal("PauseButton.png"));
 
-        arrowImage = new Texture(Gdx.files.internal("arrow.png"));
+//        Texture backgroundImage = new Texture(Gdx.files.internal("landscapebg.jpg"));
         Texture backgroundImage = new Texture(Gdx.files.internal("gamescreen2.jpeg"));
-//        Texture backgroundImage = new Texture(Gdx.files.internal("gamebackground2.jpg"));
-        //backgroundTexture = new TextureRegion(backgroundImage, -5, -5, 356, 271);
+//        backgroundTexture = new TextureRegion(backgroundImage, -5, -5, 356, 271);
         backgroundTexture = new TextureRegion(backgroundImage, 80, 50, 856, 551);
 
-        // load the drop sound effect and the rain background "music"
+        // load the sound effect and the background
         shootSound = Gdx.audio.newSound(Gdx.files.internal("tankwar.wav"));
         EnvironmentWar = Gdx.audio.newMusic(Gdx.files.internal("tankwar.wav"));
         EnvironmentWar.setLooping(true);
@@ -67,14 +56,14 @@ public class GameScreen implements Screen {
 
         // create a Rectangle to logically represent the tank
         tank1 = new Rectangle();
-        tank1.x = 800f/4 - 200;
-        tank1.y = 82;
+        tank1.x = p1.getInfo().getTank().getPositionX();
+        tank1.y = p1.getInfo().getTank().getPositionY();
         tank1.width = 70;
         tank1.height = 50;
 
         tank2 = new Rectangle();
-        tank2.x = 2* 800f/3 +5000;
-        tank2.y = 100;
+        tank2.x = p2.getInfo().getTank().getPositionX();
+        tank2.y = p2.getInfo().getTank().getPositionY();
         tank2.width = 70;
         tank2.height = 50;
 
@@ -84,28 +73,62 @@ public class GameScreen implements Screen {
         pauseButton.width = 20;
         pauseButton.height = 20;
 
-        arrowpath = new Array<Rectangle>();
-        spawnArrow();
+    }
+
+    public GameScreen(final Shoot game, GameInfo gameInfo) {
+        this.game = game;
+
+        this.p1 = new Player("Player 1",gameInfo.getP1GameInfo());
+        this.p2 = new Player("Player 2",gameInfo.getP2GameInfo());
+
+        pauseButtonImage = new Texture(Gdx.files.internal("PauseButton.png"));
+
+//        Texture backgroundImage = new Texture(Gdx.files.internal("landscapebg.jpg"));
+        Texture backgroundImage = new Texture(Gdx.files.internal("gamescreen2.jpeg"));
+//        backgroundTexture = new TextureRegion(backgroundImage, -5, -5, 356, 271);
+        backgroundTexture = new TextureRegion(backgroundImage, 80, 50, 856, 551);
+
+        // load the sound effect and the background
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("tankwar.wav"));
+        EnvironmentWar = Gdx.audio.newMusic(Gdx.files.internal("tankwar.wav"));
+        EnvironmentWar.setLooping(true);
+
+        // create the camera and the SpriteBatch
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 480);
+
+        // create a Rectangle to logically represent the tank
+        tank1 = new Rectangle();
+        tank1.x = p1.getInfo().getTank().getPositionX();
+        tank1.y = p1.getInfo().getTank().getPositionY();
+        tank1.width = 70;
+        tank1.height = 50;
+
+        tank2 = new Rectangle();
+        tank2.x = p2.getInfo().getTank().getPositionX();
+        tank2.y = p2.getInfo().getTank().getPositionY();
+        tank2.width = 70;
+        tank2.height = 50;
+
+        pauseButton = new Rectangle();
+        pauseButton.x = 800 - 30;
+        pauseButton.y = 450;
+        pauseButton.width = 20;
+        pauseButton.height = 20;
 
     }
-    private void spawnArrow() {
-        Rectangle raindrop = new Rectangle();
-//        raindrop.x = MathUtils.random(0, 800 - 64);
-        raindrop.x=80;
-        raindrop.y = 480;
-        raindrop.width = 14;
-        raindrop.height = 4;
-        arrowpath.add(raindrop);
-        lastArrowTime = TimeUtils.nanoTime();
-    }
+
 
     @Override
     public void render(float delta) {
+        // clear the screen with a dark blue color. The
+        // arguments to clear are the red, green
+        // blue and alpha component in the range [0,1]
+        // of the color to be used to clear the screen.
         ScreenUtils.clear(0, 0, 0.2f, 1);
-        backgroundOffset++;
-        if (backgroundOffset % 800 == 0) {
-            backgroundOffset = 0;
-        }
+//        debugRenderer.render(world,camera.combined);
+//        world.step(TIMESTEP,VELOCITYITERATIONS,POSITIONITERATIONS);
+
         // tell the camera to update its matrices.
         camera.update();
 
@@ -113,23 +136,16 @@ public class GameScreen implements Screen {
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
 
-        tank1Image = new Texture(Gdx.files.internal(p1Tank.getName()));
-        tank2Image = new Texture(Gdx.files.internal(p2Tank.getName()));
+        tank1Image = new Texture(Gdx.files.internal(p1.getInfo().getTank().getName()));
+        tank2Image = new Texture(Gdx.files.internal(p2.getInfo().getTank().getName()));
 
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0,0, 800, 480);
-//        game.batch.draw(backgroundTexture, -backgroundOffset,0, 800, 480);
-//        game.batch.draw(backgroundTexture, -backgroundOffset+800,0, 800, 480);
-        int player1Health = 20;
-        game.font.draw(game.batch, "Player1 Health: " + player1Health, 0, 480);
-        int player2Health = 20;
-        game.font.draw(game.batch, "Player2 Health: " + player2Health, 600, 480);
+        game.font.draw(game.batch, "Player1 Health: " + p1.getInfo().getHealth(), 0, 480);
+        game.font.draw(game.batch, "Player2 Health: " + p2.getInfo().getHealth(), 600, 480);
         game.batch.draw(tank1Image, tank1.x, tank1.y, tank1.width, tank1.height);
         game.batch.draw(tank2Image, tank2.x, tank2.y, tank2.width, tank2.height);
         game.batch.draw(pauseButtonImage, pauseButton.x, pauseButton.y, pauseButton.width, pauseButton.height);
-        for (Rectangle arrow1 : arrowpath) {
-            game.batch.draw(arrowImage,  arrow1.y-70, arrow1.x-70);
-        }
         game.batch.end();
 
 //        if (Gdx.input.isTouched()) {
@@ -138,67 +154,45 @@ public class GameScreen implements Screen {
 //            camera.unproject(touchPos);
 //            tank1.x = touchPos.x - 32;
 //        }
-
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            tank1.x -= 200 * Gdx.graphics.getDeltaTime();
+            p1.getInfo().getTank().setPositionX((int) (p1.getInfo().getTank().getPositionX() - (200 * Gdx.graphics.getDeltaTime())));
+            tank1.x = p1.getInfo().getTank().getPositionX();
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            tank1.x += 200 * Gdx.graphics.getDeltaTime();
+            p1.getInfo().getTank().setPositionX((int) (p1.getInfo().getTank().getPositionX() + (200 * Gdx.graphics.getDeltaTime())));
+            tank1.x = p1.getInfo().getTank().getPositionX();
 
-        if (tank1.x < 0)
-            tank1.x = 0;
-        if (tank1.x > 800 - 174)
-            tank1.x = 800 - 174;
-
-        if (TimeUtils.nanoTime() - lastArrowTime > 1000000000)
-            spawnArrow();
-        Iterator<Rectangle> iter = arrowpath.iterator();
-        while (iter.hasNext()) {
-            Rectangle raindrop = iter.next();
-            raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
-            if (raindrop.y + 64 < 0)
-                iter.remove();
-            if (raindrop.overlaps(tank1)) {
-                player1Health--;
-//                dropsGathered++;
-//                dropSound.play();
-                iter.remove();
-            }
+        if (tank1.x < 0) {
+            p1.getInfo().getTank().setPositionX(0);
+            tank1.x = p1.getInfo().getTank().getPositionX();
         }
-//        float leftLimit, rightLimit, upLimit, downLimit;
-//        leftLimit = -tank1.x;
-//        downLimit = -tank1.y;
-//        rightLimit = 800 - tank1.x - tank1.width;
-//        upLimit = 480/2 - tank1.y - tank1.height;
-//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && rightLimit > 0) {
-//            tank1.translate(Math.min(tank1.movementSpeed*deltaTime, rightLimit), 0f);
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.UP) && upLimit > 0) {
-//            tank1.translate( 0f, Math.min(tank1.movementSpeed*deltaTime, upLimit));
-//        }
-//
-//        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && leftLimit < 0) {
-//            tank1.translate(Math.max(-tank1.movementSpeed*deltaTime, leftLimit), 0f);
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && downLimit < 0) {
-//            tank1.translate(0f, Math.max(-tank1.movementSpeed*deltaTime, downLimit));
-//        }
+        if (tank1.x > 800 - 174) {
+            p1.getInfo().getTank().setPositionX(800-174);
+            tank1.x = p1.getInfo().getTank().getPositionX();
+        }
+
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
-            tank2.x -= 200 * Gdx.graphics.getDeltaTime();
+            p2.getInfo().getTank().setPositionX((int) (p2.getInfo().getTank().getPositionX() - (200 * Gdx.graphics.getDeltaTime())));
+            tank2.x = p2.getInfo().getTank().getPositionX();
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            tank2.x += 200 * Gdx.graphics.getDeltaTime();
+            p2.getInfo().getTank().setPositionX((int) (p2.getInfo().getTank().getPositionX() + (200 * Gdx.graphics.getDeltaTime())));
+            tank2.x = p2.getInfo().getTank().getPositionX();
 
-        if (tank2.x < 0)
-            tank2.x = 0;
-        if (tank2.x > 800 - 84)
-            tank2.x = 800 - 84;
+        if (tank2.x < 0){
+            p2.getInfo().getTank().setPositionX(0);
+            tank2.x = p2.getInfo().getTank().getPositionX();
+        }
+        if (tank2.x > 800 - 84){
+            p2.getInfo().getTank().setPositionX(800-84);
+            tank2.x = p2.getInfo().getTank().getPositionX();
+        }
 
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
             if (touchPos.x >= 800 - 30 - 5 && touchPos.x <= 800 - 30 + 20 && touchPos.y >= 450 - 5 && touchPos.y <=  450 + 20){
-                game.setScreen(new Pause(game,this));
+                game.setScreen(new Pause(game,p1.getInfo(),p2.getInfo()));
                 dispose();
             }
         }
@@ -206,6 +200,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+//        camera.viewportWidth = width / 25;
+//        camera.viewportHeight = height / 25;
+//        camera.update();
     }
 
     @Override
@@ -213,6 +210,44 @@ public class GameScreen implements Screen {
         // start the playback of the background music
         // when the screen is shown
         EnvironmentWar.play();
+
+//        world = new World(new Vector2(0,-9.81f), true);
+//        debugRenderer = new Box2DDebugRenderer();
+//        camera = new OrthographicCamera(Gdx.graphics.getWidth()/25, Gdx.graphics.getHeight() / 25);
+
+        // ball
+        // body definition
+//        BodyDef bodyDef = new BodyDef();
+//        bodyDef.type = BodyDef.BodyType.DynamicBody;
+//        bodyDef.position.set(0,1);
+
+//        CircleShape ballShape = new CircleShape();
+//        ballShape.setRadius(.5f);
+//
+//        FixtureDef fixtureDef = new FixtureDef();
+//        fixtureDef.shape = ballShape;
+//        fixtureDef.density = 2.5f;
+//        fixtureDef.friction = .25f;
+//        fixtureDef.restitution = .75f;
+//
+//        world.createBody(bodyDef).createFixture(fixtureDef);
+//        ballShape.dispose();
+
+
+        // Ground
+        // body definition
+//        bodyDef.type = BodyDef.BodyType.StaticBody;
+//        bodyDef.position.set(0,0);
+
+//        ChainShape groundShape = new ChainShape();
+//        groundShape.createChain(new Vector2[] {new Vector2(-500,0) , new Vector2(500, 0)});
+//
+//        fixtureDef.shape = groundShape;
+//        fixtureDef.friction = .5f;
+//        fixtureDef.restitution = 0;
+//
+//        world.createBody(bodyDef).createFixture(fixtureDef);
+//        groundShape.dispose();
     }
 
     @Override
