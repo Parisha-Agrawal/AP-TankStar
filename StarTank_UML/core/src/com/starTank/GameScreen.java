@@ -134,8 +134,10 @@ public class GameScreen implements Screen {
         arrows.y = 550;
         arrows.width = 14;
         arrows.height = 14;
-        arrowpath.add(arrows);
-        lastArrowTime = TimeUtils.nanoTime();
+        if (arrowpath!=null) {
+            arrowpath.add(arrows);
+            lastArrowTime = TimeUtils.nanoTime();
+        }
     }
     @Override
     public void render(float delta) {
@@ -164,9 +166,12 @@ public class GameScreen implements Screen {
         game.batch.draw(tank1Image, tank1.x, tank1.y, tank1.width, tank1.height);
         game.batch.draw(tank2Image, tank2.x, tank2.y, tank2.width, tank2.height);
         game.batch.draw(pauseButtonImage, pauseButton.x, pauseButton.y, pauseButton.width, pauseButton.height);
-        for (Rectangle arrow1 : arrowpath) {
-            game.batch.draw(arrowImage,  arrow1.y-70, arrow1.x-70);
+        if (arrowpath != null) {
+            for (Rectangle arrow1 : arrowpath) {
+                game.batch.draw(arrowImage,  arrow1.y-70, arrow1.x-70);
+            }
         }
+
         game.batch.end();
 
 //        if (Gdx.input.isTouched()) {
@@ -248,30 +253,33 @@ public class GameScreen implements Screen {
             if (tank2.x > 800 - 84)
                 tank2.x = 800 - 84;
         }
-        if (TimeUtils.nanoTime() - lastArrowTime > 1000000000)
-            spawnArrow();
-        Iterator<Rectangle> iter = arrowpath.iterator();
-        if(Gdx.input.isKeyPressed(Input.Keys.S)){
-            while (iter.hasNext()) {
-                Rectangle arrows = iter.next();
-                arrows.y -= 200 * Gdx.graphics.getDeltaTime();
-                if (arrows.y + 64 < 0)
-                    iter.remove();
-                for(int j=1;j<3;j++) {
-                    if (arrows.y >= 200 * j && arrows.y < 200 * j + 50)
-                        arrows.x = 70 * j;
+        if (arrowpath!=null) {
+            if (TimeUtils.nanoTime() - lastArrowTime > 1000000000)
+                spawnArrow();
+            Iterator<Rectangle> iter = arrowpath.iterator();
+            if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                while (iter.hasNext()) {
+                    Rectangle arrows = iter.next();
+                    arrows.y -= 200 * Gdx.graphics.getDeltaTime();
+                    if (arrows.y + 64 < 0)
+                        iter.remove();
+                    for (int j = 1; j < 3; j++) {
+                        if (arrows.y >= 200 * j && arrows.y < 200 * j + 50)
+                            arrows.x = 70 * j;
 //                    arrows.height+=j*140;
-                }
-                for(int k=1;k<3;k++){
-                    if (arrows.y>= 200*k && arrows.y<200*k+50)
-                        arrows.x= 10*k;
-                }
+                    }
+                    for (int k = 1; k < 3; k++) {
+                        if (arrows.y >= 200 * k && arrows.y < 200 * k + 50)
+                            arrows.x = 10 * k;
+                    }
 
-                if (arrows.overlaps(tank1)) {
+                    if (arrows.overlaps(tank1)) {
 //                    player1Health--;
-                    iter.remove();
+                        iter.remove();
+                    }
                 }
-            }}
+            }
+        }
 
         if(Gdx.input.isKeyPressed(Input.Keys.G)){
 //            p1.setHealth(p1.getHealth()-2);
@@ -300,10 +308,11 @@ public class GameScreen implements Screen {
                 dispose();
             }
         }
-        if (p1.getHealth() <= 0){
+
+        if (p1.getInfo().getHealth() <= 0){
             game.setScreen(new WinScreen(game,"Player 1"));
         }
-        else if (p2.getHealth() <= 0){
+        else if (p2.getInfo().getHealth() <= 0){
             game.setScreen(new WinScreen(game,"Player 2"));
         }
     }
