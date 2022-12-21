@@ -11,7 +11,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 //import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.TimeUtils;
+
+import java.util.Iterator;
 
 public class GameScreen implements Screen {
     private final Shoot game;
@@ -19,6 +23,10 @@ public class GameScreen implements Screen {
     private Texture tank1Image;
     private Texture tank2Image;
     private Texture pauseButtonImage;
+    private Texture arrowImage;
+    private Array<Rectangle> arrowpath;
+    private long lastArrowTime;
+    private int dropsGathered;
     private final TextureRegion backgroundTexture;
     private final Sound shootSound;
     private final Music EnvironmentWar;
@@ -29,6 +37,7 @@ public class GameScreen implements Screen {
     private final Tank p1Tank;
     private final Tank p2Tank;
     private int backgroundOffset;
+
 
     public GameScreen(final Shoot game, Tank p1Tank, Tank p2Tank) {
         this.game = game;
@@ -41,9 +50,9 @@ public class GameScreen implements Screen {
         this.p2Tank = p2Tank;
         pauseButtonImage = new Texture(Gdx.files.internal("PauseButton.png"));
 
-
-//        Texture backgroundImage = new Texture(Gdx.files.internal("gamescreen2.jpeg"));
-        Texture backgroundImage = new Texture(Gdx.files.internal("gamebackground2.jpg"));
+        arrowImage = new Texture(Gdx.files.internal("arrow.png"));
+        Texture backgroundImage = new Texture(Gdx.files.internal("gamescreen2.jpeg"));
+//        Texture backgroundImage = new Texture(Gdx.files.internal("gamebackground2.jpg"));
         //backgroundTexture = new TextureRegion(backgroundImage, -5, -5, 356, 271);
         backgroundTexture = new TextureRegion(backgroundImage, 80, 50, 856, 551);
 
@@ -75,8 +84,20 @@ public class GameScreen implements Screen {
         pauseButton.width = 20;
         pauseButton.height = 20;
 
-    }
+        arrowpath = new Array<Rectangle>();
+        spawnArrow();
 
+    }
+    private void spawnArrow() {
+        Rectangle raindrop = new Rectangle();
+//        raindrop.x = MathUtils.random(0, 800 - 64);
+        raindrop.x=80;
+        raindrop.y = 480;
+        raindrop.width = 14;
+        raindrop.height = 4;
+        arrowpath.add(raindrop);
+        lastArrowTime = TimeUtils.nanoTime();
+    }
 
     @Override
     public void render(float delta) {
@@ -96,9 +117,9 @@ public class GameScreen implements Screen {
         tank2Image = new Texture(Gdx.files.internal(p2Tank.getName()));
 
         game.batch.begin();
-//        game.batch.draw(backgroundTexture, 0,0, 800, 480);
-        game.batch.draw(backgroundTexture, -backgroundOffset,0, 800, 480);
-        game.batch.draw(backgroundTexture, -backgroundOffset+800,0, 800, 480);
+        game.batch.draw(backgroundTexture, 0,0, 800, 480);
+//        game.batch.draw(backgroundTexture, -backgroundOffset,0, 800, 480);
+//        game.batch.draw(backgroundTexture, -backgroundOffset+800,0, 800, 480);
         int player1Health = 20;
         game.font.draw(game.batch, "Player1 Health: " + player1Health, 0, 480);
         int player2Health = 20;
@@ -106,6 +127,9 @@ public class GameScreen implements Screen {
         game.batch.draw(tank1Image, tank1.x, tank1.y, tank1.width, tank1.height);
         game.batch.draw(tank2Image, tank2.x, tank2.y, tank2.width, tank2.height);
         game.batch.draw(pauseButtonImage, pauseButton.x, pauseButton.y, pauseButton.width, pauseButton.height);
+        for (Rectangle arrow1 : arrowpath) {
+            game.batch.draw(arrowImage,  arrow1.y-70, arrow1.x-70);
+        }
         game.batch.end();
 
 //        if (Gdx.input.isTouched()) {
@@ -125,6 +149,39 @@ public class GameScreen implements Screen {
         if (tank1.x > 800 - 174)
             tank1.x = 800 - 174;
 
+        if (TimeUtils.nanoTime() - lastArrowTime > 1000000000)
+            spawnArrow();
+        Iterator<Rectangle> iter = arrowpath.iterator();
+        while (iter.hasNext()) {
+            Rectangle raindrop = iter.next();
+            raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
+            if (raindrop.y + 64 < 0)
+                iter.remove();
+            if (raindrop.overlaps(tank1)) {
+                player1Health--;
+//                dropsGathered++;
+//                dropSound.play();
+                iter.remove();
+            }
+        }
+//        float leftLimit, rightLimit, upLimit, downLimit;
+//        leftLimit = -tank1.x;
+//        downLimit = -tank1.y;
+//        rightLimit = 800 - tank1.x - tank1.width;
+//        upLimit = 480/2 - tank1.y - tank1.height;
+//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && rightLimit > 0) {
+//            tank1.translate(Math.min(tank1.movementSpeed*deltaTime, rightLimit), 0f);
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.UP) && upLimit > 0) {
+//            tank1.translate( 0f, Math.min(tank1.movementSpeed*deltaTime, upLimit));
+//        }
+//
+//        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && leftLimit < 0) {
+//            tank1.translate(Math.max(-tank1.movementSpeed*deltaTime, leftLimit), 0f);
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && downLimit < 0) {
+//            tank1.translate(0f, Math.max(-tank1.movementSpeed*deltaTime, downLimit));
+//        }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
             tank2.x -= 200 * Gdx.graphics.getDeltaTime();
